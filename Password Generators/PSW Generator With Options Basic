@@ -1,0 +1,91 @@
+import random as rand
+import pyperclip
+import time
+
+characters = {
+    "Uppercase" : ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                   "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+    "Lowercase" : ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+                   "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+    "Numeric" : ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
+    "Special" : ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "-", "+", "=",
+                 "{", "}", "|", ":", ";", "<", ",", ">", ".", "?", "/"],
+}
+
+
+def specifications():
+    print("\nFrom the list of the following options, please select which characters you want to include in your password:"
+          "\n  1. Uppercase      (A - Z)"
+          "\n  2. Lowercase      (a - z)"
+          "\n  3. Numerical      (0 - 9)"
+          "\n  4. Special        (!, @, etc.)")
+    options = input("\nSelect options (enter option numbers, separated by a space): ")
+    return options
+
+
+def generateUsableChars(options):
+    grandList = []
+    options = options.split(" ")
+    numOptions = len(options)
+    if numOptions < 4:
+        for option in options:
+            if option == "1":
+                for character in characters["Uppercase"]:
+                    grandList.append(character)
+                    continue
+            if option == "2":
+                for character in characters["Lowercase"]:
+                    grandList.append(character)
+                    continue
+            if option == "3":
+                for character in characters["Numeric"]:
+                    grandList.append(character)
+                    continue
+            if option == "4":
+                for character in characters["Special"]:
+                    grandList.append(character)
+                    continue
+    else:
+        for key in characters:
+            for character in characters[key]:
+                grandList.append(character)
+    return grandList
+
+
+def getPSWLengthSpecs():
+    min = int(input("\nEnter minimum character requirement: "))
+    max = input("\nEnter maximum character allowance if known (if unknown, press 'Enter'): ")
+    if max != type(int):
+        length = min * 4
+        max = length
+        print(max)
+    randomLength = input("\nDo you want to generate a password of random length? (Y/N): ").lower()
+    if randomLength in ["y", "yes"]:
+        length = rand.randint(int(min), int(max))
+    else:
+        length = int(max)
+    return length
+
+
+def genPassword(grandList, length):
+    password = ""
+    while len(password) < length:
+        randomChar = grandList[rand.randint(0, len(grandList)-1)]
+        password += randomChar
+    print("\nYour final password is: " + password)
+    return password
+
+
+def copyPassword(password):
+    copyOption = input("\nDo you want to copy your password to clipboard? (Y/N): ").lower()
+    if copyOption in ["y", "yes"]:
+        pyperclip.copy(password)
+        time.sleep(1)
+        print("\nCopied!")
+
+
+options = specifications()
+length = getPSWLengthSpecs()
+grandList = generateUsableChars(options)
+password = genPassword(grandList, length)
+copyPassword(password)
